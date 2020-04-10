@@ -1,0 +1,214 @@
+﻿<!-- Home Page -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <title>Weather Information</title>
+    <!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<style>
+      #thermometer_inner { width: 95%; height: 40%; margin:2.5%; background: red; position:absolute; bottom:10%;}
+      #thermometer_outer {height:400px; position:relative;}
+      #temp_today { color:white; text-align:center; position:relative; top:0%; }
+      body{
+      /*image sourced from https://www.google.com/url?sa=i&url=https%3A%2F%2Fopenweathermap.org%2F&psig=AOvVaw20P3Gfg93XrGNztO2nPhr0&ust=1585803443098000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCMDXlKq4xugCFQAAAAAdAAAAABAD*/
+      background-image: url('./img/weather.png');
+      background-repeat: no-repeat;
+      background-size: cover;
+      }
+      .container{
+      /* margin-top: 2%; */
+      padding:2%;
+      opacity: 0.9;
+      background: #FFFFFF;
+      }
+	</style>
+  </head>
+  <body>
+      <div class="container">
+          <br>
+          <h1 id="heading" style="text-align:center">Weather Forecast</h1>
+          <hr>
+          <div class="row">
+              <div class="col-6">
+                  <div class="row">
+                      <div class="col-2">
+                          <!-- source for images: https://www.iconfinder.com/iconsets/weather-line-19 -->
+                          <img id="image_today" class="img-fluid" src="img/clear-day.png" alt="Today's Weather Icon">
+                      </div>
+                      <div class="col-10">
+                          <h5>
+                              Local Date/Time: <span id="local_time">2020-04-01 11:00AM</span><br>
+                              Precipitation: <span id="precip_today">10%</span><br>
+                              Humidity: <span id="humidity_today">80%</span><br>
+                              Wind Speed: <span id="wind_today">5</span> mph<br>
+                              Summary: <span id="summary_today">Summary Info</span>
+                          </h5>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-2">
+              </div>
+              <div class="col-4">
+                  <div class="card">
+                      <div id="thermometer_outer">
+                          <div id="thermometer_inner"><p id="temp_today" class="h3"> 0 F</p></div>
+                      </div>
+                      <div class="card-body">
+                          <h5 class="text-center">Thermometer</h5>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <br>
+          <h2 class="h1" style="text-align:center;">5 Day Forecast</h2>
+          <hr>
+          <div class="row" id="5_day_forecast">
+          </div>
+          <script type="text/javascript">
+              function getLatLong(form) {
+                  console.log("Hello");
+                  storeValue('test', "hello");
+              }
+          </script>
+          <form onsubmit="getLatLong(this);">
+              <label for="fname">Latitude:</label>
+              <input type="text" id="latitude" name="latitude">
+              <label for="lname">Longitude:</label>
+              <input type="text" id="longitude" name="longitude">
+              <input type="submit" value="Submit">
+          </form>
+          <!--<form action="testFunction();">
+            <label for="fname">Latitude:</label>
+            <input type="text" id="latitude" name="fname">
+            <label for="lname">Longitude:</label>
+            <input type="text" id="longitude" name="lname">
+            <input type="submit" value="Submit">
+        </form>-->
+          <br>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+      <script>
+          //helper functions
+          var dayOfWeek = "";
+          function formatDate(date, month, year) {
+              month = (month.length < 2) ? ('0' + month) : month;
+              date = (date.length < 2) ? ('0' + date) : date;
+              return [year, month, date].join('-');
+          }
+          function getDayofWeek(date, month, year) {
+              var week_names = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+              dayOfWeek = week_names[new Date([month, date, year].join('-')).getDay()];
+          }
+          function getFarenheitTemp(temp) {
+              return (9 * temp / 5) + 32;
+          }
+          function CreateCard(dayOfWeek, highTemp, lowTemp, sunrise, sunset) {
+              var html = '';
+              html += '<div class="row" id="5_day_forecast">';
+              html += '<div style="width: 20%;">';
+              html += '<div class="card-body">';
+              html += '<h5 class="card-title">' + dayOfWeek + '</h5 >';
+              html += '<p class="card-text">';
+              html += 'High: ' + highTemp;
+              html += 'Low: ' + lowTemp;
+              html += 'Sunrise: ' + sunrise;
+              html += 'Sunset: ' + sunset;
+              html += '</p>';
+              html += '</div>';
+              html += '</div>';
+              html += '</div>';
+              html += '</div>';
+              return html;
+          }
+          //run when the document object model is ready for javascript code to execute
+          $(document).ready(function () {
+              var url = '';
+              var urlParams = new URLSearchParams(window.location.search);
+              var latitude = urlParams.get('latitude')
+              console.log(latitude);
+              var longitude = urlParams.get('longitude')
+              console.log(longitude);
+
+              if (latitude != null && longitude != null) {
+                  url = 'https://api.weatherstack.com/forecast?access_key=5bc82451636190abd9d7afe6fe9b20b5&query=' + latitude + ',' + longitude + '&forecast_days=5';
+              } else {
+                  url = 'http://api.weatherstack.com/forecast?access_key=5bc82451636190abd9d7afe6fe9b20b5&query=Boulder&forecast_days=5';
+              }
+
+              $.ajax({ url: url, dataType: "jsonp" }).then(function (data) {
+                  console.log(data);//Review all of the data returned
+                  console.log(data.current.weather_icons[0]);
+
+                  //1
+                  $("#image_today").attr("src", data.current.weather_icons[0]);
+
+                  //2
+                  $("#heading").text("Today's Weather Forecast - " + data.location.name);
+
+                  //3
+                  $("#temp_today").text(getFarenheitTemp(data.current.temperature) + " F");
+
+                  //4
+                  if (data.current.temperature <= 100 && data.current.temperature >= 0) {
+                      $("#thermometer_inner").height(getFarenheitTemp(data.current.temperature) + "%");
+                  } else if (data.current.temperature > 100) {
+                      $("#thermometer_inner").height(getFarenheitTemp("100%"));
+                  } else {
+                      $("#thermometer_inner").height("0%");
+                  }
+
+                  //5
+                  $("#precip_today").text(data.current.precip + "%");
+
+                  //6
+                  $("#humidity_today").text(data.current.humidity + "%");
+
+                  //7
+                  $("#wind_today").text(data.current.wind_speed);
+
+                  //8
+                  $("#summary_today").text(data.current.weather_descriptions);
+
+                  $("#5_day_forcast").innerHTML += CreateCard();
+
+                  /* Process the daily forecast for the next 5 days */
+                  //helper function - to be used to get the key for each of the 5 days in the future when creating cards for forecasting weather
+                  function getKey(i) {
+                      var date = new Date();
+                      var d = date.getDate() + i;
+                      var m = date.getMonth() + 1;
+                      var y = date.getFullYear();
+                      var key_forecast = formatDate(d.toString(), m.toString(), y.toString()).toString();
+                      getDayofWeek(d, m, y);
+                      return data.forecast[key_forecast];
+                  }
+
+                  function makeKey(i) {
+                      var date = new Date();
+                      var d = date.getDate() + i;
+                      var m = date.getMonth() + 1;
+                      var y = date.getFullYear();
+                      getDayofWeek(d, m, y);
+                      return formatDate(d.toString(), m.toString(), y.toString()).toString();
+                  }
+
+                  var temp = document.getElementById('5_day_forecast');
+                  var toInsert = '';
+                  for (var i = 0; i < 5; i++) {
+                      var key = makeKey(i);
+                      toInsert += CreateCard(dayOfWeek, data.forecast[key].maxtemp, data.forecast[key].mintemp, data.forecast[key].astro.sunrise, data.forecast[key].astro.sunset);
+                  }
+                  temp.innerHTML = toInsert;
+              })
+          })
+          function testFunction() {
+              console.log("Testing");
+          }
+      </script>
+  </body>
+</html>
